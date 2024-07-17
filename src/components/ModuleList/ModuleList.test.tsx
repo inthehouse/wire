@@ -3,18 +3,20 @@ import { render, screen } from '@testing-library/react';
 import ModuleList from './ModuleList';
 
 const mockModules = [
-    { name: 'react', owner: 'facebook', stars: 180000 },
-    { name: 'react-router', owner: 'remix', stars: 42000 },
-    { name: 'react-redux', owner: 'reduxjs', stars: 20000 },
+    { name: 'react', stars: 1000, rank: 1 },
+    { name: 'vue', stars: 900, rank: 2 },
 ];
 
 describe('ModuleList Component', () => {
-    it('renders modules list', () => {
+    it('renders modules list when data is provided', () => {
         render(<ModuleList modules={mockModules} />);
 
-        mockModules.forEach((module) => {
-            expect(screen.getByText(module.name)).toBeInTheDocument();
-            expect(screen.getByText(`Owner: ${module.owner} | Stars: ${module.stars}`)).toBeInTheDocument();
-        });
+        expect(screen.getByText('react')).toBeInTheDocument();
+        expect(screen.getByText('Stars: 1000')).toBeInTheDocument();
+        expect(screen.getByText('Rank: 1')).toBeInTheDocument();
+
+        expect(screen.getByText('vue')).toBeInTheDocument();
+        expect(screen.getByText('Stars: 900')).toBeInTheDocument();
+        expect(screen.getByText('Rank: 2')).toBeInTheDocument();
     });
 });

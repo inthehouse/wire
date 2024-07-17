@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import SearchBar from './SearchBar';
+import SearchBar from './Search';
 
 describe('SearchBar Component', () => {
     it('calls onSearch with the input value when the form is submitted', () => {

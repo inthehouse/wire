@@ -1,11 +1,7 @@
 import React from 'react';
-import { Box, Typography, List, ListItem, ListItemText } from '@mui/material';
-
-interface Module {
-    name: string;
-    owner: string;
-    stars: number;
-}
+import { Box, Typography } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
+import { Module } from '../../services/ApiService';
 
 interface ModuleListProps {
     modules: Module[];
@@ -14,19 +10,13 @@ interface ModuleListProps {
 const ModuleList: React.FC<ModuleListProps> = ({ modules }) => {
     return (
         <Box>
-            <Typography variant="h4" component="h2" gutterBottom>
-                Modules
-            </Typography>
-            <List>
-                {modules.map((module, index) => (
-                    <ListItem key={index}>
-                        <ListItemText
-                            primary={module.name}
-                            secondary={`Owner: ${module.owner} | Stars: ${module.stars}`}
-                        />
-                    </ListItem>
-                ))}
-            </List>
+            {modules.map((module) => (
+                <Box key={uuidv4()} mb={2}>
+                    <Typography variant="h6">{module.name}</Typography>
+                    <Typography variant="body2">Stars: {module.stars}</Typography>
+                    <Typography variant="body2">Rank: {module.rank}</Typography>
+                </Box>
+            ))}
         </Box>
     );
 };
