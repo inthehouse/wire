@@ -3,24 +3,16 @@ import { Pagination as MuiPagination } from '@mui/material';
 
 interface PaginationProps {
     currentPage: number;
-    totalItems: number;
-    itemsPerPage: number;
+    totalPages: number;
     onPageChange: (page: number) => void;
 }
-
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalItems, itemsPerPage, onPageChange }) => {
-    const pageCount = Math.ceil(totalItems / itemsPerPage);
-
-    const handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
-        onPageChange(page);
-    };
-
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
     return (
         <MuiPagination
-            count={pageCount}
+            count={totalPages}
             page={currentPage}
-            onChange={handleChange}
             color="primary"
+            onChange={(event, value) => onPageChange(value)}
         />
     );
 };
