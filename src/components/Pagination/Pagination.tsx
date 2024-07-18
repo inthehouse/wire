@@ -1,19 +1,49 @@
 import React from 'react';
-import { Pagination as MuiPagination } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 
 interface PaginationProps {
+    totalItems: number;
+    itemsPerPage: number;
     currentPage: number;
-    totalPages: number;
-    onPageChange: (page: number) => void;
+    onPageChange: (newPage: number) => void;
 }
-const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
+
+const Pagination: React.FC<PaginationProps> = ({
+    totalItems,
+    itemsPerPage,
+    currentPage,
+    onPageChange,
+}) => {
+
+    const handlePageChange = (newPage: number) => {
+        onPageChange(newPage);
+    };
+
     return (
-        <MuiPagination
-            count={totalPages}
-            page={currentPage}
-            color="primary"
-            onChange={(event, value) => onPageChange(value)}
-        />
+        <Grid container justifyContent="center" spacing={2} mt={2}>
+            <Grid item>
+                <Button
+                    size="small"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    variant="contained"
+                    color="primary"
+                >
+                    Previous
+                </Button>
+            </Grid>
+            <Grid item>
+                <Button
+                    size="small"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= Math.ceil(totalItems / itemsPerPage) - 1}
+                    variant="contained"
+                    color="primary"
+                >
+                    Next
+                </Button>
+            </Grid>
+        </Grid>
     );
 };
 

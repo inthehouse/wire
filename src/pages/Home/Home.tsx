@@ -1,53 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography } from '@mui/material';
-import ModuleList from '../../components/ModuleList/ModuleList';
-import Pagination from '../../components/Pagination/Pagination';
+import { Container } from '@mui/material';
 import Search from '../../components/Search/Search';
+import ModuleList from '../../components/ModuleList/ModuleList';
 import { searchModules, Module } from '../../services/ApiService';
 
-const ITEMS_PER_PAGE = 5;
-
 const Home: React.FC = () => {
+    const [query, setQuery] = useState('');
     const [modules, setModules] = useState<Module[]>([]);
-    const [totalItems, setTotalItems] = useState(0);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const fetchModules = async (query: string) => {
-        try {
-            const data = await searchModules(query);
-            setModules(data.results);
-            setTotalItems(data.total);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    const [currentPage] = useState(0);
 
     useEffect(() => {
-        if (searchQuery) {
-            fetchModules(searchQuery);
+        const fetchData = async () => {
+            try {
+                const data = await searchModules(query);
+                setModules(data.results);
+            } catch (error) {
+                console.error('Error fetching modules:', error);
+            }
+        };
+
+        if (query) {
+            fetchData();
         }
-    }, [searchQuery]);
+    }, [query]);
 
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const paginatedModules = modules.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const handleSort = (property: keyof Module) => {
+        const sortedModules = [...modules].sort((a, b) => {
+            if (property === 'name') {
+                return a.name.localeCompare(b.name);
+            } else if (property === 'stars') {
+                return b.stars - a.stars;
+            } else {
+                return 0;
+            }
+        });
+        setModules(sortedModules);
+    };
 
     return (
         <Container>
-            <Typography variant="h2" component="h1" gutterBottom>
-                Module Search
-            </Typography>
-            <Search onSearch={setSearchQuery} />
-            <ModuleList modules={paginatedModules} />
-            {totalPages > 0 && (
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={setCurrentPage}
-                />
-            )}
+            <Search onSearch={setQuery} />
+            <ModuleList
+                modules={modules}
+                onSort={handleSort}
+                currentPage={currentPage}
+            />
         </Container>
     );
 };
