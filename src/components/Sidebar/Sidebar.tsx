@@ -1,9 +1,19 @@
 import React from 'react';
-import { styled, Drawer, List, ListItem, ListItemText, ListItemButton, ListItemIcon, Divider } from '@mui/material';
+import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material';
 import { Inbox, Mail, Home as HomeIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
 
 const drawerWidth = 240;
+
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+        width: drawerWidth,
+        boxSizing: 'border-box',
+    },
+}));
 
 const Sidebar: React.FC = () => {
     const navigate = useNavigate();
@@ -21,30 +31,19 @@ const Sidebar: React.FC = () => {
     };
 
     return (
-        <Drawer
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
-                    width: drawerWidth,
-                    boxSizing: 'border-box',
-                },
-            }}
-            variant="permanent"
-            open
-        >
+        <StyledDrawer variant="permanent" open>
             <Divider />
             <List>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton onClick={() => handleNavigation(item.route)}>
-                            <ListItemIcon>{item.icon}</ListItemIcon>
-                            <ListItemText primary={item.text} />
+                {menuItems.map(({ text, icon, route }) => (
+                    <ListItem key={text} disablePadding>
+                        <ListItemButton onClick={() => handleNavigation(route)}>
+                            <ListItemIcon>{icon}</ListItemIcon>
+                            <ListItemText primary={text} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
-        </Drawer>
+        </StyledDrawer>
     );
 };
 

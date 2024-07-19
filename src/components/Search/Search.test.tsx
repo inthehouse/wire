@@ -1,18 +1,41 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import SearchBar from './Search';
+import { render, fireEvent, screen } from '@testing-library/react';
+import Search from './Search';
 
-describe('SearchBar Component', () => {
-    it('calls onSearch with the input value when the form is submitted', () => {
-        const mockOnSearch = jest.fn();
-        render(<SearchBar onSearch={mockOnSearch} />);
+interface SearchProps {
+    onSearch: (query: string) => void;
+}
 
-        const input = screen.getByLabelText('Search for a module');
-        const button = screen.getByRole('button', { name: /Search/i });
+describe('Search Component', () => {
+    const mockProps: SearchProps = {
+        onSearch: jest.fn(),
+    };
 
-        fireEvent.change(input, { target: { value: 'react' } });
-        fireEvent.click(button);
+    it('renders search form correctly', () => {
+        render(<Search onSearch={mockProps.onSearch} />);
 
-        expect(mockOnSearch).toHaveBeenCalledWith('react');
+        expect(screen.getByText('Search your modules here')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
+    });
+
+    it('calls onSearch prop with correct query on form submission', () => {
+        render(<Search onSearch={mockProps.onSearch} />);
+
+        const searchInput = screen.getByRole('textbox') as HTMLInputElement;
+        fireEvent.change(searchInput, { target: { value: 'react' } });
+
+        const searchButton = screen.getByRole('button', { name: 'Search' });
+        fireEvent.click(searchButton);
+
+        expect(mockProps.onSearch).toHaveBeenCalledWith('react');
+    });
+
+    it('does not call onSearch prop when query is empty on form submission', () => {
+        render(<Search onSearch={mockProps.onSearch} />);
+
+        const searchButton = screen.getByRole('button', { name: 'Search' });
+        fireEvent.click(searchButton);
+
+        expect(mockProps.onSearch).not.toHaveBeenCalled();
     });
 });
